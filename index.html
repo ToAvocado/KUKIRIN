@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a1a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>KuKirin Wheelie Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Russo+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="KuKirin Wheelie Run"></canvas>
+
+  <!-- ============ MENU ============ -->
+  <section id="screen-menu" class="screen">
+    <div class="menu-wrap">
+      <header class="logo">
+        <span class="logo-top">KUKIRIN</span>
+        <span class="logo-bottom">WHEELIE RUN</span>
+      </header>
+      <h2 class="howto">HOW TO PLAY</h2>
+      <div class="tiles">
+        <div class="tile">
+          <span class="tile-num">1</span>
+          <canvas class="tile-cv" data-tile="1"></canvas>
+          <h3>Keep Balance</h3>
+          <div class="keys"><kbd>A</kbd><kbd>D</kbd></div>
+          <p>Trzymaj kąt w zielonej strefie</p>
+        </div>
+        <div class="tile">
+          <span class="tile-num">2</span>
+          <canvas class="tile-cv" data-tile="2"></canvas>
+          <h3>Change Lane</h3>
+          <div class="keys"><kbd>W</kbd><kbd>S</kbd></div>
+          <p>Zmiana pasa szarpie balansem</p>
+        </div>
+        <div class="tile">
+          <span class="tile-num">3</span>
+          <canvas class="tile-cv" data-tile="3"></canvas>
+          <h3>Avoid Cars &amp; Pedestrians</h3>
+          <div class="keys"><kbd class="red">!</kbd></div>
+          <p>Wykrzyknik ostrzega przed pieszym</p>
+        </div>
+        <div class="tile">
+          <span class="tile-num">4</span>
+          <canvas class="tile-cv" data-tile="4"></canvas>
+          <h3>Collect Batteries</h3>
+          <div class="keys"><kbd class="green">+12%</kbd></div>
+          <p>Ładują pasek boostu</p>
+        </div>
+        <div class="tile">
+          <span class="tile-num">5</span>
+          <canvas class="tile-cv" data-tile="5"></canvas>
+          <h3>Boost</h3>
+          <div class="keys"><kbd class="wide">SHIFT</kbd></div>
+          <p>Szybciej, ale mocno szarpie kątem</p>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="diff" role="radiogroup" aria-label="Poziom trudności">
+          <button class="chip" data-diff="easy">ŁATWY</button>
+          <button class="chip" data-diff="normal">NORMALNY</button>
+          <button class="chip" data-diff="hard">TRUDNY</button>
+        </div>
+      </div>
+      <button id="btn-start" class="btn-start"><span>START RIDE</span></button>
+      <div class="menu-foot">
+        <span id="menu-best">REKORD: 0</span>
+        <button id="btn-mute-menu" class="mini">DŹWIĘK: ON</button>
+      </div>
+      <p class="hint">SPACJA start · ←/→ ↑/↓ alternatywnie · P/ESC pauza · M dźwięk · F1 debug</p>
+    </div>
+  </section>
+
+  <!-- ============ PAUZA ============ -->
+  <section id="screen-pause" class="screen hidden">
+    <div class="panel">
+      <h2 class="panel-title">PAUZA</h2>
+      <div class="settings">
+        <div class="set-row">
+          <span>Poziom trudności</span>
+          <div class="diff" role="radiogroup">
+            <button class="chip" data-diff="easy">ŁATWY</button>
+            <button class="chip" data-diff="normal">NORMALNY</button>
+            <button class="chip" data-diff="hard">TRUDNY</button>
+          </div>
+        </div>
+        <p class="set-note">Zmiana trudności działa od następnego przejazdu.</p>
+        <div class="set-row">
+          <span>Dźwięk</span>
+          <button id="btn-mute" class="toggle">ON</button>
+        </div>
+        <div class="set-row">
+          <span>Głośność muzyki</span>
+          <input id="rng-music" type="range" min="0" max="100" value="60">
+        </div>
+        <div class="set-row">
+          <span>Odwróć A/D</span>
+          <button id="btn-invert" class="toggle">OFF</button>
+        </div>
+        <div class="set-row touch-only">
+          <span>Balans przechyłem telefonu</span>
+          <button id="btn-tilt" class="toggle">OFF</button>
+        </div>
+        <div class="set-row">
+          <span>Tryb debug (F1)</span>
+          <button id="btn-debug" class="toggle">OFF</button>
+        </div>
+      </div>
+      <div class="panel-buttons">
+        <button id="btn-resume" class="btn-primary">WRÓĆ DO JAZDY</button>
+        <button id="btn-restart" class="btn-secondary">RESTART</button>
+        <button id="btn-menu" class="btn-secondary">MENU</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GAME OVER ============ -->
+  <section id="screen-over" class="screen hidden">
+    <div class="panel over">
+      <h2 id="over-title" class="panel-title">WYWROTKA!</h2>
+      <div id="over-record" class="record hidden">NEW RECORD!</div>
+      <div class="over-score"><span>WYNIK</span><strong id="over-score">0</strong></div>
+      <div class="over-best">Rekord: <b id="over-best">0</b></div>
+      <div class="stats">
+        <div><span>Dystans</span><b id="st-dist">0 m</b></div>
+        <div><span>Najdłuższy wheelie</span><b id="st-wheelie">0 s</b></div>
+        <div><span>Najwyższe combo</span><b id="st-combo">x1</b></div>
+        <div><span>Baterie</span><b id="st-bat">0</b></div>
+        <div><span>Close calls</span><b id="st-close">0</b></div>
+        <div><span>Perfect balance</span><b id="st-perfect">0</b></div>
+      </div>
+      <div id="over-mission" class="over-mission"></div>
+      <div class="panel-buttons">
+        <button id="btn-again" class="btn-start small"><span>Jedź jeszcze raz</span></button>
+        <button id="btn-over-menu" class="btn-secondary">MENU</button>
+      </div>
+      <p class="hint">SPACJA = natychmiastowy restart</p>
+    </div>
+  </section>
+
+  <!-- ============ STEROWANIE DOTYKOWE ============ -->
+  <div id="touch" class="touch hidden">
+    <div class="touch-left">
+      <button class="tbtn" data-act="back" aria-label="Pochyl do tyłu">◀</button>
+      <button class="tbtn" data-act="fwd" aria-label="Pochyl do przodu">▶</button>
+    </div>
+    <div class="touch-right">
+      <div class="lane-btns">
+        <button class="tbtn small" data-act="up" aria-label="Pas dalej">▲</button>
+        <button class="tbtn small" data-act="down" aria-label="Pas bliżej">▼</button>
+      </div>
+      <button class="tbtn boost" data-act="boost">BOOST</button>
+    </div>
+    <button class="tbtn pause" data-act="pause" aria-label="Pauza">II</button>
+  </div>
+
+  <div id="rotate-hint"><div>⟳</div><p>Obróć telefon poziomo</p></div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
