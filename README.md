@@ -2,6 +2,8 @@
 
 Przeglądarkowa gra 2.5D: jedziesz na tylnym kole hulajnogi KuKirin po synthwave'owej promenadzie. Napisana w vanilla HTML/CSS/JS z Canvas 2D i Web Audio, bez bundlera i zależności.
 
+**Zagraj online:** https://kukirin-five.vercel.app
+
 ## Uruchomienie
 
 - **Najprościej:** otwórz `index.html` dwuklikiem. Gra działa z `file://`, bo nie używa modułów ES.
