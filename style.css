@@ -429,3 +429,4 @@ body.is-touch .touch-only { display: flex; }
 @media (max-width: 760px) and (min-height: 521px) {
   .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; }
 }
+.set-row[hidden]{display:none}
